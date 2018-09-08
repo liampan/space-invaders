@@ -5,18 +5,23 @@ import spaceinvaders.Printer._
 object Game extends App {
 
 
-  val m : Int = 10
+  val bS : Int = 10
 
   val shipInput: List[Thing] = List(Ship(3, 1), Missile(85, -10))
 
   def parse(board: List[Thing]): List[Thing] = {
-    board.map {
-      case t =>
-          t.getName match{
-            case "ship"    => moveShip(Ship(t.getIndex,t.getSpeed))
-            case "missile" => Missile(t.getIndex+t.getSpeed , t.getSpeed)
-          }
+    val moved = board.map{ t =>
+        t.getName match{
+          case "ship"    => moveShip(Ship(t.getIndex,t.getSpeed))
+          case "missile" => moveMissile(Missile(t.getIndex,t.getSpeed))
+      }
     }
+    collisionDetect(moved)
+  }
+
+  def moveMissile(missile: Missile): Missile = {
+    //missile.setIndex(missile.getIndex+missile.getSpeed)
+    Missile(missile.getIndex+missile.getSpeed , missile.getSpeed)
   }
 
   def moveShip(ship: Ship): Ship ={
@@ -48,7 +53,7 @@ object Game extends App {
     }
   }
 
-  def willChangeLines(index: Int, speed: Int):Boolean = {
+  def willChangeLines(index: Int, speed: Int): Boolean = {
     val newPos = index + speed
     if (newPos < 0) return true
     val currentLineNumber = index/10
@@ -56,20 +61,18 @@ object Game extends App {
     newLineNumber != currentLineNumber
   }
 
-
-
   def collisionDetect(board: List[Thing]): List[Thing] = {
-    val shipsIndexs: Set[Int] = board.filter(x => x.getName == "ship").map(s => s.getIndex).toSet
-    val missilesIndexs: Set[Int] = board.filter(x => x.getName == "missile").map(m => m.getIndex).toSet
-    val collisons = shipsIndexs.intersect(missilesIndexs)
-    board.filterNot(s => collisons.contains(s.getIndex)).filterNot(s => s == Missile(5 , -10))
+    val shipsIndexes: Set[Int] = board.filter(x => x.getName == "ship").map(s => s.getIndex).toSet
+    val missilesIndexes: Set[Int] = board.filter(x => x.getName == "missile").map(m => m.getIndex).toSet
+    val collisions = shipsIndexes.intersect(missilesIndexes)
+    board.filterNot(s => collisions.contains(s.getIndex)).filterNot(s => s == Missile(5 , -10))
   }
 
   def loop(board: List[Thing]): Unit = {
 
     def loopHelper(board: List[Thing], count: Int) {
-      printBoard(board, m)
-      val next = collisionDetect(parse(board))
+      printBoard(board, bS)
+      val next = parse(board)
       Thread.sleep(1000)
       loopHelper(if (count%2 == 0){next ++ List(Missile(85, -10))} else next, count+1)
     }
