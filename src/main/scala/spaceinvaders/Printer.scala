@@ -2,7 +2,7 @@ package spaceinvaders
 
 object Printer {
 
-  def printBoard(board: List[Thing], m: Int): Unit = {
+  def printBoard(board: List[Entity], m: Int): Unit = {
     val printable = boardConverter(board, m)
     println("┏" + "━" * m * 2 + "━┓")
     printable.foreach(row => {
@@ -15,7 +15,7 @@ object Printer {
     println("┗" + "━" * m * 2 + "━┛")
   }
 
-  def boardConverter(things: List[Thing], m: Int): List[List[(Int, Int, String)]] = {
+  def boardConverter(things: List[Entity], m: Int): List[List[(Int, Int, String)]] = {
     val blank = List.range(0, 100).map(i => (i, 0, "blank"))
     val steps = List.range(m, m*m+m, m)
     val filled: List[(Int, Int, String)] = blank.map(s =>  if(things.map(_.getIndex).contains(s._1)) {

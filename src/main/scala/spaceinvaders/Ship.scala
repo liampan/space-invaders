@@ -1,36 +1,37 @@
 package spaceinvaders
 
-case class Ship(index: Int, speed: Int) extends Thing {
+class Ship(private var index: Int, private var speed: Int) extends Entity {
 
-  private var shipSpeed = speed
-
-  private var shipIndex = index
+  private var shipLook = "-"
 
   override def getName: String = "ship"
 
-  override def getSpeed: Int = shipSpeed
+  override def getSpeed: Int = this.speed
 
-  override def getIndex: Int = shipIndex
+  override def getIndex: Int = this.index
 
   override def getLook = {
-    val s = this.speed
-    if (s <= -5) ItemLook.ship_left_fast
-    else if (s < 0) ItemLook.ship_left
-    else if (s <= 5) ItemLook.ship_right
-    else ItemLook.ship_right_fast
-  }
-
-  override def setIndex(newIndex: Int) = {
-    this.shipIndex = newIndex
+    val s = this.getSpeed
+    shipLook  = {
+      if (s <= -5) ItemLook.ship_left_fast
+      else if (s < 0) ItemLook.ship_left
+      else if (s <= 5) ItemLook.ship_right
+      else ItemLook.ship_right_fast
+    }
+    shipLook
   }
 
   def setSpeed(newSpeed: Int) = {
-    this.shipSpeed = newSpeed
+    this.speed = newSpeed
+  }
+
+  override def setIndex(newIndex: Int) = {
+    this.index = newIndex
   }
 
   def setBoth(newIndex: Int, newSpeed: Int) = {
-    this.shipIndex = newIndex
-    this.shipSpeed = newSpeed
+    this.setIndex(newIndex)
+    this.setSpeed(newSpeed)
   }
 
 }
