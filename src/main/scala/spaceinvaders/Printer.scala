@@ -8,7 +8,7 @@ object Printer {
     printable.foreach(row => {
       print("┃ ")
       row.foreach(cell => {
-        print(s"${if (cell._2 == 0) s"${Console.BLACK}_${Console.RESET}" else cell._3} ")
+        print(s"${if (cell._2 == 0) s"${Console.BLACK}.${Console.RESET}" else cell._3} ")
       })
       println("┃")
     })
