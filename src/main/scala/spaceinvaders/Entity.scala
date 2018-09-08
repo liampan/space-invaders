@@ -1,6 +1,6 @@
 package spaceinvaders
 
-trait Thing {
+trait Entity {
 
   def getName: String
 
@@ -11,5 +11,7 @@ trait Thing {
   def getIndex: Int
 
   def setIndex(newIndex: Int)
+
+  def setBoth(newIndex: Int, newSpeed: Int)
 
 }
