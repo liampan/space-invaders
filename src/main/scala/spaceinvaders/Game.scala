@@ -4,7 +4,7 @@ import spaceinvaders.Printer._
 
 object Game extends App {
 
-  val bS : Int = 10
+  val boardSize : Int = 10
 
   val shipInput: List[Entity] = List(new Ship(3, 1))
 
@@ -13,6 +13,7 @@ object Game extends App {
         t.getName match{
           case "ship"    => moveShip(t)
           case "missile" => moveMissile(t)
+          case "explosion" => t.setIndex(-1)
       }
     }
     collisionDetect(board)
@@ -62,20 +63,20 @@ object Game extends App {
   def collisionDetect(board: List[Entity]): List[Entity] ={
     val shipsIndexes: Set[Int] = board.filter(x => x.getName == "ship").map(s => s.getIndex).toSet
     val missilesIndexes: Set[Int] = board.filter(x => x.getName == "missile").map(m => m.getIndex).toSet
-    val collisions = shipsIndexes.intersect(missilesIndexes)
+    val collisions: Set[Int] = shipsIndexes.intersect(missilesIndexes)
     val survivingShips = board.filterNot(s => collisions.contains(s.getIndex))
       .filterNot(s => s.getName == "missile" && s.getIndex == -5)
-    survivingShips
+     val explosions = collisions.map(x => new Explosion(x))
+     survivingShips ++ explosions
   }
 
   def loop(board: List[Entity]): Unit ={
 
     def loopHelper(board: List[Entity], count: Int) {
-      printBoard(board, bS)
-      println(board)
+      printBoard(board, boardSize)
       val next = parse(board)
-      Thread.sleep(1000)
-      loopHelper(if (count%2 == 1){next ++ List(new Missile(85, -10))} else next, count+1)
+      Thread.sleep(500)
+      loopHelper(if (count/2%2 == 0){next ++ List(new Missile(85, -10))} else next, count+1)
     }
 
     loopHelper(board, 0)
